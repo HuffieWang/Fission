@@ -1,0 +1,5 @@
+include ':app', ':fission'
+rootProject.name='Fission'
+include ':AndroidLibrary'
+project (':AndroidLibrary').projectDir = new File('E:/Android/Project/AndroidLibrary/')
+include ':AndroidLibrary:base'

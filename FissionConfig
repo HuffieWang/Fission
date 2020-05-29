@@ -1,0 +1,12 @@
+{
+    "packageName":"com.fission",
+    "annotations":[
+        "com.musheng.fissionpre.sample.Adapter"
+    ],
+    "plugins":[
+        {"name":"com.musheng.fissionpre.sample.AdapterSlice", "route":"fragment-class", "priority":2}
+    ],
+    "extOutputs":[
+        {"id":"entity", "filepath":"../entity"}
+    ]
+}
