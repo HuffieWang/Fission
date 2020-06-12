@@ -43,10 +43,17 @@ public class FragmentSlice extends AbstractSlice {
             return null;
         }
 
-        String className = annotation.name() + "Fragment";
-        String contractName = annotation.name() + "Contract";
+        String elementName;
+        if(!"".equals(annotation.name())){
+            elementName = annotation.name();
+        } else {
+            elementName = element.getSimpleName().toString().replaceAll("Contract", "");
+        }
 
-        String presenterName = annotation.name() + "Presenter";
+
+        String className = elementName + "Fragment";
+        String contractName = elementName + "Contract";
+        String presenterName = elementName + "Presenter";
 
         PackageSlice packageSlice = new PackageSlice(packageName,
                 "android.os.Bundle",
@@ -67,7 +74,7 @@ public class FragmentSlice extends AbstractSlice {
 
         MethodSlice getRootViewMethod = new MethodSlice("public","View", "getRootView", null,
                 "@Override", "inflater$LayoutInflater", "container$ViewGroup", "savedInstanceState$Bundle");
-        getRootViewMethod.addSlice(new LineSlice("return inflater.inflate(R.layout.fragment_" + annotation.name().toLowerCase()
+        getRootViewMethod.addSlice(new LineSlice("return inflater.inflate(R.layout.fragment_" + elementName.toLowerCase()
                 +", container, false);"));
 
         MethodSlice initWidgetMethod = new MethodSlice("public","void",

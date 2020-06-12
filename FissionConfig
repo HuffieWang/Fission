@@ -1,5 +1,5 @@
 {
-    "packageName":"com.fission",
+    "packageName":"com.imtoken",
     "annotations":[
         "com.musheng.fissionpre.sample.Adapter"
     ],

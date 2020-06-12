@@ -1,10 +1,8 @@
 package com.fission.api;
 
 import com.fission.FissionConfig;
-import com.fission.FissionPluginConfig;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,8 +28,6 @@ public abstract class AbstractSlice implements ISlice {
     private List<String> topContentList = new ArrayList<>();
     private List<String> bottomContentList = new ArrayList<>();
 
-    private FissionConfig fissionConfig;
-
     @Override
     public void addSlice(ISlice container) {
         sliceList.add(container);
@@ -53,37 +49,6 @@ public abstract class AbstractSlice implements ISlice {
             }
         }
 
-        if(fissionConfig != null){
-            List<FissionPluginConfig> plugins = fissionConfig.getPlugins();
-
-            if(plugins != null && !plugins.isEmpty()){
-
-                for(FissionPluginConfig plugin : plugins){
-
-                    if(plugin.getRoute() == null){
-                        continue;
-                    }
-
-                    String clazzName = plugin.getName();
-                    int priority = plugin.getPriority();
-                    String[] routes = plugin.getRoute().split("-");
-
-                    List<String> idRoutes = Arrays.asList(routes);
-                    ISlice slice = findSlice(idRoutes);
-                    if(slice != null){
-                        try {
-                            Class sliceClass = Class.forName(clazzName);
-                            ISlice sliceInstance = (ISlice) sliceClass.newInstance();
-                            sliceInstance.setPriority(priority);
-                            slice.addSlice(sliceInstance);
-                        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }
-
         Collections.sort(sliceList, new Comparator<ISlice>() {
             @Override
             public int compare(ISlice o1, ISlice o2) {
@@ -93,7 +58,11 @@ public abstract class AbstractSlice implements ISlice {
 
         if(sliceList != null && !sliceList.isEmpty()){
             for(ISlice slice : sliceList){
-                slice.setDeep(deep+1);
+                if(slice.isEqualParentDeep()){
+                    slice.setDeep(deep);
+                } else {
+                    slice.setDeep(deep+1);
+                }
             }
         }
 
@@ -111,6 +80,11 @@ public abstract class AbstractSlice implements ISlice {
     @Override
     public int getDeep() {
         return deep;
+    }
+
+    @Override
+    public boolean isEqualParentDeep(){
+        return false;
     }
 
     @Override
@@ -173,7 +147,6 @@ public abstract class AbstractSlice implements ISlice {
 
     @Override
     public String handle(Element element, RoundEnvironment roundEnvironment, String packageName, FissionConfig config) {
-        fissionConfig = config;
         return null;
     }
 
@@ -184,7 +157,8 @@ public abstract class AbstractSlice implements ISlice {
 
     @Override
     public ISlice build() {
-        if(getTopContents(new ArrayList<>()) == null && getBottomContents(new ArrayList<>()) == null){
+        if(getTopContents(new ArrayList<>()) == null
+                && getBottomContents(new ArrayList<>()) == null){
             setDeep(-1);
         } else {
             setDeep(0);
@@ -211,6 +185,7 @@ public abstract class AbstractSlice implements ISlice {
         return deepPadding;
     }
 
+    @Override
     public ISlice findSlice(List<String> idRoutes) {
         if(idRoutes == null || idRoutes.isEmpty()){
             return null;
@@ -229,4 +204,5 @@ public abstract class AbstractSlice implements ISlice {
         }
         return null;
     }
+
 }

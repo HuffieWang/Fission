@@ -6,7 +6,7 @@ package com.fission.annotation;
  * Description :
  */
 public @interface Contract {
-    String name();
+    String name() default "";
 
     boolean isFragment() default false;
 

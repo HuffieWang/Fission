@@ -96,4 +96,10 @@ public class FetcherSlice extends AbstractSlice {
         return annotation.name() + "Fetcher.java";
     }
 
+    @Override
+    public boolean isForceBuild(Element element) {
+        Entity annotation = element.getAnnotation(Entity.class);
+        return annotation.forceFetcher();
+    }
+
 }

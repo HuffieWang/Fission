@@ -37,8 +37,15 @@ public class PresenterSlice extends AbstractSlice {
         super.handle(element, roundEnvironment, packageName, config);
         Contract annotation = element.getAnnotation(Contract.class);
 
-        String className = annotation.name() + "Presenter";
-        String contractName = annotation.name() + "Contract";
+        String elementName;
+        if(!"".equals(annotation.name())){
+            elementName = annotation.name();
+        } else {
+            elementName = element.getSimpleName().toString().replaceAll("Contract", "");
+        }
+
+        String className = elementName + "Presenter";
+        String contractName = elementName + "Contract";
 
         PackageSlice packageSlice = new PackageSlice(packageName,
                 "com.musheng.android.common.mvp.BasePresenter"

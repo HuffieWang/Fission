@@ -13,6 +13,7 @@ import com.fission.slice.mvp.FragmentSlice;
 import com.fission.slice.mvp.LayoutSlice;
 import com.fission.slice.mvp.PresenterSlice;
 import com.fission.slice.mvp.RouterSlice;
+import com.fission.util.FLogUtil;
 import com.fission.util.FSystemUtil;
 import com.google.auto.service.AutoService;
 import com.google.gson.Gson;
@@ -22,8 +23,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -198,6 +201,42 @@ public class FissionProcessor extends AbstractProcessor {
                     String filename = slice.handle(element, roundEnvironment, packageName, fissionConfig);
                     if(filename == null){
                         continue;
+                    }
+
+                    if(fissionConfig != null){
+
+                        List<FissionPluginConfig> plugins = fissionConfig.getPlugins();
+
+                        if(plugins != null && !plugins.isEmpty()){
+
+                            for(FissionPluginConfig plugin : plugins){
+
+                                if(plugin.getRoute() == null){
+                                    continue;
+                                }
+
+                                String clazzName = plugin.getName();
+                                int priority = plugin.getPriority();
+                                String[] routes = plugin.getRoute().split("-");
+
+                                List<String> idRoutes = Arrays.asList(routes);
+                                ISlice slice2 = slice.findSlice(idRoutes);
+
+                                if(slice2 != null){
+                                    try {
+                                        Class sliceClass = Class.forName(clazzName);
+                                        ISlice sliceInstance = (ISlice) sliceClass.newInstance();
+                                        sliceInstance.setPriority(priority);
+                                        sliceInstance.handle(element, roundEnvironment, packageName, fissionConfig);
+                                        slice2.addSlice(sliceInstance);
+
+                                    } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                                        e.printStackTrace();
+                                        FLogUtil.d("Fission:" + e.toString());
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     String content = slice.build().getContent();

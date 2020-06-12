@@ -44,10 +44,17 @@ public class ActivitySlice extends AbstractSlice {
             return null;
         }
 
-        String className = annotation.name() + "Activity";
-        String contractName = annotation.name() + "Contract";
-        String routerName = annotation.name() + "Router";
-        String presenterName = annotation.name() + "Presenter";
+        String elementName;
+        if(!"".equals(annotation.name())){
+            elementName = annotation.name();
+        } else {
+            elementName = element.getSimpleName().toString().replaceAll("Contract", "");
+        }
+
+        String className = elementName + "Activity";
+        String contractName = elementName + "Contract";
+        String routerName = elementName + "Router";
+        String presenterName = elementName + "Presenter";
 
         PackageSlice packageSlice = new PackageSlice(packageName,
                 "android.os.Bundle",
@@ -69,7 +76,7 @@ public class ActivitySlice extends AbstractSlice {
 
         MethodSlice setRootViewMethod = new MethodSlice("public","void",
                 "setRootView", null,"@Override", "savedInstanceState$Bundle");
-        setRootViewMethod.addSlice(new LineSlice("setContentView(R.layout.activity_"+annotation.name().toLowerCase()+");"));
+        setRootViewMethod.addSlice(new LineSlice("setContentView(R.layout.activity_"+elementName.toLowerCase()+");"));
 
         MethodSlice initWidgetMethod = new MethodSlice("public","void",
                 "initWidget", null,"@Override");

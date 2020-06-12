@@ -1,6 +1,7 @@
 package com.fission.slice.fetcher;
 
 import com.fission.FissionConfig;
+import com.fission.annotation.Contract;
 import com.fission.annotation.Entity;
 import com.fission.api.AbstractSlice;
 import com.fission.slice.ClassSlice;
@@ -69,5 +70,12 @@ public class EntitySlice extends AbstractSlice {
 
         return annotation.name() + ".java";
     }
+
+    @Override
+    public boolean isForceBuild(Element element) {
+        Entity annotation = element.getAnnotation(Entity.class);
+        return annotation.forceResponse();
+    }
+
 
 }

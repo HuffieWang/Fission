@@ -55,7 +55,13 @@ public class LayoutSlice extends AbstractSlice {
     @Override
     public String handle(Element element, RoundEnvironment roundEnvironment, String packageName, FissionConfig config) {
         Contract annotation = element.getAnnotation(Contract.class);
-        String classname = annotation.name().toLowerCase() + ".xml";
+        String elementName;
+        if(!"".equals(annotation.name())){
+            elementName = annotation.name();
+        } else {
+            elementName = element.getSimpleName().toString().replaceAll("Contract", "");
+        }
+        String classname = elementName.toLowerCase() + ".xml";
         classname = (annotation.isFragment() ? "fragment_" : "activity_") + classname;
         return classname;
     }

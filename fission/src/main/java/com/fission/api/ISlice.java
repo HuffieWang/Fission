@@ -35,6 +35,7 @@ public interface ISlice {
      * **/
     void setDeep(int deep);
     int getDeep();
+    boolean isEqualParentDeep();
 
     /**
      * 默认文件输出路径
@@ -52,6 +53,11 @@ public interface ISlice {
      * **/
     void addSlice(ISlice slice);
     List<ISlice> getSliceList();
+
+    /**
+     * 根据ID链寻找子Slice
+     * **/
+    ISlice findSlice(List<String> idRoutes);
 
     /**
      * 顶部文本，列表中的每个item输出一行文本

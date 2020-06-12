@@ -34,14 +34,20 @@ public class RouterSlice extends AbstractSlice {
         if(annotation.isFragment()){
             return null;
         }
-        String className = annotation.name() + "Router";
+        String elementName;
+        if(!"".equals(annotation.name())){
+            elementName = annotation.name();
+        } else {
+            elementName = element.getSimpleName().toString().replaceAll("Contract", "");
+        }
+        String className = elementName + "Router";
 
         PackageSlice packageSlice = new PackageSlice(packageName, "com.musheng.android.router.MSBaseRouter");
         ClassSlice classSlice = new ClassSlice("public",  "class", className,
                 "MSBaseRouter",
                 null);
 
-        classSlice.addSlice(new LineSlice("public static final String PATH = \"/app/" + annotation.name() + "\";\n"));
+        classSlice.addSlice(new LineSlice("public static final String PATH = \"/app/" + elementName + "\";\n"));
 
         MethodSlice getPathMethod = new MethodSlice("public", "String", "getPath", null, "@Override");
         getPathMethod.addSlice(new LineSlice("return PATH;"));

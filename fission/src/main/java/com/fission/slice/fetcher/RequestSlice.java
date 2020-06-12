@@ -51,10 +51,11 @@ public class RequestSlice extends AbstractSlice {
         ParamSlice paramSlice = new ParamSlice(requests);
         ConstructorSlice emptyConstructorSlice = new ConstructorSlice(annotation.name()+"Request");
         classSlice.addSlice(paramSlice);
-        classSlice.addSlice(emptyConstructorSlice);
         if(requests.length > 0){
             ConstructorSlice constructorSlice = new ConstructorSlice(annotation.name()+"Request", requests);
             classSlice.addSlice(constructorSlice);
+        } else {
+            classSlice.addSlice(emptyConstructorSlice);
         }
         for(String response : requests){
             classSlice.addSlice(new SetterSlice(response));
@@ -77,6 +78,12 @@ public class RequestSlice extends AbstractSlice {
         addSlice(classSlice);
 
         return annotation.name() + "Request.java";
+    }
+
+    @Override
+    public boolean isForceBuild(Element element) {
+        Entity annotation = element.getAnnotation(Entity.class);
+        return annotation.forceRequest();
     }
 
 }
