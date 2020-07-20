@@ -7,6 +7,13 @@ import com.fission.slice.ClassSlice;
 import com.fission.slice.LineSlice;
 import com.fission.slice.MethodSlice;
 import com.fission.slice.PackageSlice;
+import com.fission.slice.view.RecyclerJavaSlice;
+import com.fission.slice.view.RecyclerParamSlice;
+import com.fission.slice.view.TabLayoutJavaSlice;
+import com.fission.slice.view.TabLayoutParamSlice;
+import com.fission.slice.view.ViewPagerJavaSlice;
+import com.fission.slice.view.ViewPagerParamSlice;
+import com.fission.util.FLogUtil;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
@@ -36,7 +43,6 @@ public class ActivitySlice extends AbstractSlice {
 
     @Override
     public String handle(Element element, RoundEnvironment roundEnvironment, String packageName, FissionConfig config) {
-        super.handle(element, roundEnvironment, packageName, config);
 
         Contract annotation = element.getAnnotation(Contract.class);
 
@@ -82,11 +88,20 @@ public class ActivitySlice extends AbstractSlice {
                 "initWidget", null,"@Override");
         initWidgetMethod.addSlice(new LineSlice(""));
 
+        initWidgetMethod.addSlice(new TabLayoutJavaSlice());
+        initWidgetMethod.addSlice(new ViewPagerJavaSlice());
+        initWidgetMethod.addSlice(new RecyclerJavaSlice());
+
         addSlice(packageSlice);
+        classSlice.addSlice(new TabLayoutParamSlice());
+        classSlice.addSlice(new ViewPagerParamSlice());
+        classSlice.addSlice(new RecyclerParamSlice());
         classSlice.addSlice(initPresenterMethod);
         classSlice.addSlice(setRootViewMethod);
         classSlice.addSlice(initWidgetMethod);
         addSlice(classSlice);
+
+        super.handle(element, roundEnvironment, packageName, config);
 
         return className + ".java";
     }

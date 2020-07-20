@@ -1,6 +1,7 @@
 package com.fission;
 
 import com.fission.annotation.Contract;
+import com.fission.annotation.Dialog;
 import com.fission.annotation.Entity;
 import com.fission.annotation.ForceBuild;
 import com.fission.api.ISlice;
@@ -13,6 +14,8 @@ import com.fission.slice.mvp.FragmentSlice;
 import com.fission.slice.mvp.LayoutSlice;
 import com.fission.slice.mvp.PresenterSlice;
 import com.fission.slice.mvp.RouterSlice;
+import com.fission.slice.view.DialogJavaSlice;
+import com.fission.slice.view.DialogXMLSlice;
 import com.fission.util.FLogUtil;
 import com.fission.util.FSystemUtil;
 import com.google.auto.service.AutoService;
@@ -120,6 +123,9 @@ public class FissionProcessor extends AbstractProcessor {
         /** 默认加载：网络请求自动生成 **/
         annotations.add(Entity.class.getCanonicalName());
 
+        /** 默认加载：弹窗快速构建 **/
+        annotations.add(Dialog.class.getCanonicalName());
+
         /** 加载开发者自定义的注解 **/
         annotations.addAll(fissionConfig.getAnnotations());
     }
@@ -139,6 +145,10 @@ public class FissionProcessor extends AbstractProcessor {
         slices.add(new FetcherSlice());
         slices.add(new RequestSlice());
         slices.add(new ApiSlice());
+
+        /** 默认加载：弹窗快速构建 **/
+        slices.add(new DialogJavaSlice());
+        slices.add(new DialogXMLSlice());
 
         /** 加载开发者自定义的Slice **/
         if(fissionConfig.getPlugins() != null){

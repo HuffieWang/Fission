@@ -147,6 +147,9 @@ public abstract class AbstractSlice implements ISlice {
 
     @Override
     public String handle(Element element, RoundEnvironment roundEnvironment, String packageName, FissionConfig config) {
+        for(ISlice slice : sliceList){
+            slice.handle(element, roundEnvironment, packageName, config);
+        }
         return null;
     }
 

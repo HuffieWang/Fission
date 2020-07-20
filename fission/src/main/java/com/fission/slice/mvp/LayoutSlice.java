@@ -3,6 +3,12 @@ package com.fission.slice.mvp;
 import com.fission.FissionConfig;
 import com.fission.annotation.Contract;
 import com.fission.api.AbstractSlice;
+import com.fission.slice.view.RecyclerJavaSlice;
+import com.fission.slice.view.RecyclerXMLSlice;
+import com.fission.slice.view.TabLayoutJavaSlice;
+import com.fission.slice.view.TabLayoutXMLSlice;
+import com.fission.slice.view.ViewPagerJavaSlice;
+import com.fission.slice.view.ViewPagerXMLSlice;
 
 import java.util.List;
 
@@ -55,6 +61,11 @@ public class LayoutSlice extends AbstractSlice {
     @Override
     public String handle(Element element, RoundEnvironment roundEnvironment, String packageName, FissionConfig config) {
         Contract annotation = element.getAnnotation(Contract.class);
+
+        addSlice(new TabLayoutXMLSlice());
+        addSlice(new ViewPagerXMLSlice());
+        addSlice(new RecyclerXMLSlice());
+
         String elementName;
         if(!"".equals(annotation.name())){
             elementName = annotation.name();
@@ -63,6 +74,7 @@ public class LayoutSlice extends AbstractSlice {
         }
         String classname = elementName.toLowerCase() + ".xml";
         classname = (annotation.isFragment() ? "fragment_" : "activity_") + classname;
+        super.handle(element, roundEnvironment, packageName, config);
         return classname;
     }
 
