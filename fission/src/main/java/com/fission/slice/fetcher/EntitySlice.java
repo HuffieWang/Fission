@@ -1,7 +1,6 @@
 package com.fission.slice.fetcher;
 
 import com.fission.FissionConfig;
-import com.fission.annotation.Contract;
 import com.fission.annotation.Entity;
 import com.fission.api.AbstractSlice;
 import com.fission.slice.ClassSlice;
@@ -43,7 +42,9 @@ public class EntitySlice extends AbstractSlice {
         String[] responses = annotation.response();
         boolean isContainList = false;
 
-        ClassSlice classSlice = new ClassSlice("public", "class", annotation.name(), "BaseEntity", null);
+        String objectboxAnnotation = annotation.objectbox() ? "@Entity" : null;
+
+        ClassSlice classSlice = new ClassSlice("public", "class", annotation.name(), "BaseEntity", objectboxAnnotation);
         ParamSlice paramSlice = new ParamSlice(responses);
         ConstructorSlice emptyConstructorSlice = new ConstructorSlice(annotation.name());
         classSlice.addSlice(paramSlice);
@@ -62,6 +63,9 @@ public class EntitySlice extends AbstractSlice {
         List<String> imports = new ArrayList<>();
         if(isContainList){
             imports.add("java.util.List");
+        }
+        if(annotation.objectbox()){
+            imports.add("io.objectbox.annotation.*");
         }
         PackageSlice packageSlice = new PackageSlice(packageName, imports);
 

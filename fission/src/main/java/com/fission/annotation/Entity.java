@@ -11,6 +11,7 @@ public @interface Entity {
     String[] response();
     boolean json() default true;
     boolean fetcher() default true;
+    boolean objectbox() default false;
     boolean forceRequest() default false;
     boolean forceResponse() default false;
     boolean forceFetcher() default false;
