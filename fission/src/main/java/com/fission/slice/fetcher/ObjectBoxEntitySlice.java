@@ -21,7 +21,7 @@ import javax.lang.model.element.Element;
  * CreateDate  : 2020/5/20 13:54
  * Description :
  */
-public class EntitySlice extends AbstractSlice {
+public class ObjectBoxEntitySlice extends AbstractSlice {
 
     @Override
     public String getId() {
@@ -39,36 +39,26 @@ public class EntitySlice extends AbstractSlice {
 
         Entity annotation = element.getAnnotation(Entity.class);
 
+        if(!annotation.objectbox()){
+            return null;
+        }
+
+        String name = "X" + annotation.name();
         String[] responses = annotation.response();
-        if(annotation.objectbox() && responses.length > 0){
-            for(int i = 0; i < responses.length; i++){
-                String response = responses[i];
-                if(response.contains("#")){
-                    responses[i] = response.substring(0, response.lastIndexOf("#"));
-                }
-            }
-        }
-
-        ClassSlice classSlice = null;
-        if(annotation.objectbox()){
-            classSlice = new ClassSlice("public", "class", annotation.name(),
-                    "BaseEntity", null, "XTranslation<X"+annotation.name()+">");
-        } else {
-            classSlice = new ClassSlice("public", "class", annotation.name(),
-                    "BaseEntity", null);
-        }
-
-        ParamSlice paramSlice = new ParamSlice(responses);
-        ConstructorSlice emptyConstructorSlice = new ConstructorSlice(annotation.name());
-        classSlice.addSlice(paramSlice);
-        classSlice.addSlice(emptyConstructorSlice);
-        if(responses.length > 0){
-            ConstructorSlice constructorSlice = new ConstructorSlice(annotation.name(), responses);
-            classSlice.addSlice(constructorSlice);
-        }
 
         boolean isContainList = false;
 
+        String objectboxAnnotation = annotation.objectbox() ? "@Entity" : null;
+
+        ClassSlice classSlice = new ClassSlice("public", "class", name, "BaseEntity", objectboxAnnotation);
+        ParamSlice paramSlice = new ParamSlice(responses);
+        ConstructorSlice emptyConstructorSlice = new ConstructorSlice(name);
+        classSlice.addSlice(paramSlice);
+        classSlice.addSlice(emptyConstructorSlice);
+        if(responses.length > 0){
+            ConstructorSlice constructorSlice = new ConstructorSlice(name, responses);
+            classSlice.addSlice(constructorSlice);
+        }
         for(String response : responses){
             classSlice.addSlice(new SetterSlice(response));
             classSlice.addSlice(new GetterSlice(response));
@@ -77,26 +67,24 @@ public class EntitySlice extends AbstractSlice {
             }
         }
 
-        if(annotation.objectbox()){
-            classSlice.addSlice(new ObjectBoxTranslateSlice("X" + annotation.name(), annotation.response()));
-        }
-
         List<String> imports = new ArrayList<>();
         if(isContainList){
-            imports.add("java.util.List");
+            imports.add("io.objectbox.relation.ToMany");
         }
         if(annotation.objectbox()){
-            imports.add("com.musheng.android.common.objectbox.XTranslation");
-            if(isContainList){
-                imports.add("com.musheng.android.common.objectbox.XCollections");
-            }
+            imports.add("io.objectbox.annotation.*");
         }
         PackageSlice packageSlice = new PackageSlice(packageName, imports);
 
         addSlice(packageSlice);
         addSlice(classSlice);
 
-        return annotation.name() + ".java";
+        return name + ".java";
+    }
+
+    @Override
+    public String getContent() {
+        return super.getContent().replaceAll("List<", "ToMany<X");
     }
 
     @Override

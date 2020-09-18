@@ -8,6 +8,7 @@ import com.fission.api.ISlice;
 import com.fission.slice.fetcher.ApiSlice;
 import com.fission.slice.fetcher.EntitySlice;
 import com.fission.slice.fetcher.FetcherSlice;
+import com.fission.slice.fetcher.ObjectBoxEntitySlice;
 import com.fission.slice.fetcher.RequestSlice;
 import com.fission.slice.mvp.ActivitySlice;
 import com.fission.slice.mvp.FragmentSlice;
@@ -142,6 +143,7 @@ public class FissionProcessor extends AbstractProcessor {
 
         /** 默认加载：网络请求自动生成 **/
         slices.add(new EntitySlice());
+        slices.add(new ObjectBoxEntitySlice());
         slices.add(new FetcherSlice());
         slices.add(new RequestSlice());
         slices.add(new ApiSlice());
