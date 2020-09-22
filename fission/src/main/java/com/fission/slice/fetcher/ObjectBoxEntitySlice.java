@@ -9,6 +9,7 @@ import com.fission.slice.GetterSlice;
 import com.fission.slice.PackageSlice;
 import com.fission.slice.ParamSlice;
 import com.fission.slice.SetterSlice;
+import com.fission.util.StringParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class ObjectBoxEntitySlice extends AbstractSlice {
 
     @Override
     public String getId() {
-        return "entity";
+        return "xentity";
     }
 
     @Override
@@ -45,6 +46,23 @@ public class ObjectBoxEntitySlice extends AbstractSlice {
 
         String name = "X" + annotation.name();
         String[] responses = annotation.response();
+
+        if(responses.length > 0){
+            for(int i = 0; i < responses.length; i++){
+                String response = responses[i];
+                if(!StringParser.isBaseType(response)){
+                    String[] split = response.split("\\$");
+                    if(!split[1].contains("[]")){
+                        if(split[1].contains("#")){
+                            String[] split2 = split[1].split("#");
+                            responses[i] = split[0] + "$ToOne<X" + split2[0]+">#"+split2[1];
+                        } else {
+                            responses[i] = split[0] + "$ToOne<X" + split[1]+">";
+                        }
+                    }
+                }
+            }
+        }
 
         boolean isContainList = false;
 
@@ -68,11 +86,9 @@ public class ObjectBoxEntitySlice extends AbstractSlice {
         }
 
         List<String> imports = new ArrayList<>();
-        if(isContainList){
-            imports.add("io.objectbox.relation.ToMany");
-        }
         if(annotation.objectbox()){
             imports.add("io.objectbox.annotation.*");
+            imports.add("io.objectbox.relation.*");
         }
         PackageSlice packageSlice = new PackageSlice(packageName, imports);
 
@@ -84,7 +100,8 @@ public class ObjectBoxEntitySlice extends AbstractSlice {
 
     @Override
     public String getContent() {
-        return super.getContent().replaceAll("List<", "ToMany<X");
+        return super.getContent()
+                .replaceAll("List<", "ToMany<X");
     }
 
     @Override

@@ -17,10 +17,15 @@ public class ObjectBoxTranslateSlice extends MethodSlice {
         addSlice(new LineSlice(name + " entityX = new "+ name +"();"));
         for(String param : params){
             ParamEntity paramEntity = StringParser.parseParam(param);
-            if(!paramEntity.getType().contains("List<")){
-                addSlice(new LineSlice("entityX." + paramEntity.getName() + " = " + paramEntity.getName() + ";"));
-            } else {
+
+            if(paramEntity.getType().contains("List<")){
                 addSlice(new LineSlice("entityX." + paramEntity.getName() + ".addAll(XCollections.translate(" + paramEntity.getName() + "));"));
+            } else {
+                if(StringParser.isBaseType(param)){
+                    addSlice(new LineSlice("entityX." + paramEntity.getName() + " = " + paramEntity.getName() + ";"));
+                } else {
+                    addSlice(new LineSlice("entityX." + paramEntity.getName() + ".setTarget(" + paramEntity.getName() + ".translate());"));
+                }
             }
         }
         addSlice(new LineSlice("return entityX;"));

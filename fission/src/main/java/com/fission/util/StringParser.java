@@ -7,7 +7,18 @@ package com.fission.util;
  */
 public class StringParser {
 
-    public static ParamEntity parseParam(String param){
+    public static boolean isBaseType(String param){
+        if(param == null || !param.contains("$")){
+            return true;
+        }
+        String type = param.split("\\$")[1];
+        return type.startsWith("boolean") || type.startsWith("char") || type.startsWith("byte") || type.startsWith("short") ||
+                type.startsWith("int") || type.startsWith("long") || type.startsWith("float") || type.startsWith("double")
+                || type.startsWith("String");
+    }
+
+    public static ParamEntity
+    parseParam(String param){
         String type = null;
         String name = null;
         String annotation = null;
