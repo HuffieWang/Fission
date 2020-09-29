@@ -49,7 +49,11 @@ public class FetcherSlice extends AbstractSlice {
         MethodSlice fetchNetwork = new MethodSlice("public", responseName, "fetchNetwork","Exception","@Override",
                 "request$"+requestName);
         if(annotation.json()){
-            fetchNetwork.addSlice(new LineSlice("return ((Api)MSRetrofit.getApi())." + urlName + "(request).execute().body();"));
+            if(annotation.version() == 2){
+                fetchNetwork.addSlice(new LineSlice("return (MSRetrofit2.getApi(Api.class))." + urlName + "(request).execute().body();"));
+            } else {
+                fetchNetwork.addSlice(new LineSlice("return ((Api)MSRetrofit.getApi())." + urlName + "(request).execute().body();"));
+            }
         } else {
             StringBuilder builder = new StringBuilder();
             String requestParam = null;
@@ -64,7 +68,11 @@ public class FetcherSlice extends AbstractSlice {
             } else {
                 requestParam = "\"default\"";
             }
-            fetchNetwork.addSlice(new LineSlice("return ((Api)MSRetrofit.getApi())." + urlName + "(" + requestParam + ").execute().body();"));
+            if(annotation.version() == 2){
+                fetchNetwork.addSlice(new LineSlice("return (MSRetrofit2.getApi(Api.class))." + urlName + "(" + requestParam + ").execute().body();"));
+            } else {
+                fetchNetwork.addSlice(new LineSlice("return ((Api)MSRetrofit.getApi())." + urlName + "(" + requestParam + ").execute().body();"));
+            }
         }
 
         MethodSlice fetchCache = new MethodSlice("public", responseName, "fetchCache", "Exception", "@Override",
@@ -87,7 +95,14 @@ public class FetcherSlice extends AbstractSlice {
 
         List<String> imports = new ArrayList<>();
         imports.add("com.musheng.android.fetcher.MSBaseFetcher");
-        imports.add("com.musheng.android.common.retrofit.MSRetrofit");
+
+        if(annotation.version() == 2){
+            imports.add("com.musheng.android.common.retrofit.MSRetrofit2");
+        } else {
+            imports.add("com.musheng.android.common.retrofit.MSRetrofit");
+        }
+
+
         PackageSlice packageSlice = new PackageSlice(packageName, imports);
 
         addSlice(packageSlice);

@@ -66,7 +66,6 @@ public class FragmentSlice extends AbstractSlice {
                 "android.view.View",
                 "android.view.ViewGroup",
                 "android.view.LayoutInflater",
-                config.getPackageName() + ".R",
                 "com.musheng.android.common.mvp.BaseFragment",
                 "com.alibaba.android.arouter.facade.annotation.Route"
         );

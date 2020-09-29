@@ -93,7 +93,9 @@ public class DialogJavaSlice extends AbstractSlice {
         addSlice(packageSlice);
         addSlice(classSlice);
 
-        return annotation.name() + "Dialog.java";
+        String filename = annotation.name().endsWith("Dialog") ? annotation.name() : annotation.name() + "Dialog";
+
+        return filename + ".java";
     }
 
     @Override
@@ -101,4 +103,5 @@ public class DialogJavaSlice extends AbstractSlice {
         Dialog annotation = element.getAnnotation(Dialog.class);
         return annotation.forceView();
     }
+
 }

@@ -184,6 +184,11 @@ public abstract class AbstractSlice implements ISlice {
         return "./";
     }
 
+    @Override
+    public String getOutputDir(String moduleName) {
+        return getOutputDir();
+    }
+
     public String getDeepPadding(){
         return deepPadding;
     }

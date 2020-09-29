@@ -9,6 +9,7 @@ public @interface Entity {
     String name();
     String[] request() default {};
     String[] response();
+    int version() default 1;
     boolean json() default true;
     boolean fetcher() default true;
     boolean objectbox() default false;

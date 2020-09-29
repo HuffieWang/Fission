@@ -35,10 +35,10 @@ public class ViewPagerParamSlice extends AbstractSlice {
         ViewPager annotation = element.getAnnotation(ViewPager.class);
         if(annotation != null){
             String s =
-                    "@BindView(R.id.tb)\n" +
+                    "@BindView(R2.id.tb)\n" +
                             "    MSSlidingTabLayout slidingTabLayout;\n" +
                             "\n" +
-                            "    @BindView(R.id.vp)\n" +
+                            "    @BindView(R2.id.vp)\n" +
                             "    MSViewPager viewPager;\n" +
                             "\n" +
                             "    private FragmentStatePagerAdapter tabAdapter;\n" +

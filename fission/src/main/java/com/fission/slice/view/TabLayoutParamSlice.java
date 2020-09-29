@@ -35,7 +35,7 @@ public class TabLayoutParamSlice extends AbstractSlice {
         TabLayout annotation = element.getAnnotation(TabLayout.class);
         if(annotation != null){
             String s =
-                    "@BindView(R.id.tb_main)\n" +
+                    "@BindView(R2.id.tb_main)\n" +
                             "    MSTabLayout tabLayout;\n" +
                             "\n" +
                             "    ArrayList<androidx.fragment.app.Fragment> fragments = new ArrayList<>();\n";

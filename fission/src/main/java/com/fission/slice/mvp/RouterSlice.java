@@ -18,6 +18,8 @@ import javax.lang.model.element.Element;
  */
 public class RouterSlice extends AbstractSlice {
 
+    private String moduleName;
+
     @Override
     public String getId() {
         return "router";
@@ -47,7 +49,7 @@ public class RouterSlice extends AbstractSlice {
                 "MSBaseRouter",
                 null);
 
-        classSlice.addSlice(new LineSlice("public static final String PATH = \"/app/" + elementName + "\";\n"));
+        classSlice.addSlice(new LineSlice("public static final String PATH = \"/"+moduleName+"/" + elementName + "\";\n"));
 
         MethodSlice getPathMethod = new MethodSlice("public", "String", "getPath", null, "@Override");
         getPathMethod.addSlice(new LineSlice("return PATH;"));
@@ -63,5 +65,11 @@ public class RouterSlice extends AbstractSlice {
     public boolean isForceBuild(Element element) {
         Contract annotation = element.getAnnotation(Contract.class);
         return annotation.forceView();
+    }
+
+    @Override
+    public String getOutputDir(String moduleName) {
+        this.moduleName = moduleName;
+        return super.getOutputDir(moduleName);
     }
 }

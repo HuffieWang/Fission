@@ -2,7 +2,6 @@ package com.fission.slice.view;
 
 import com.fission.FissionConfig;
 import com.fission.annotation.RecyclerView;
-import com.fission.annotation.ViewPager;
 import com.fission.api.AbstractSlice;
 import com.fission.slice.LineSlice;
 
@@ -36,10 +35,10 @@ public class RecyclerParamSlice extends AbstractSlice {
         RecyclerView annotation = element.getAnnotation(RecyclerView.class);
         if(annotation != null){
             String s =
-                    "@BindView(R.id.refresh)\n" +
+                    "@BindView(R2.id.refresh)\n" +
                             "    SmartRefreshLayout refreshLayout;\n" +
                             "\n" +
-                            "    @BindView(R.id.rv)\n" +
+                            "    @BindView(R2.id.rv)\n" +
                             "    MSRecyclerView recyclerView;\n" +
                             "\n" +
                             "    private List<String> list = new ArrayList<>();\n" +

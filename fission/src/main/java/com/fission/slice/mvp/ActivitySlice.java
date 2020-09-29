@@ -13,7 +13,6 @@ import com.fission.slice.view.TabLayoutJavaSlice;
 import com.fission.slice.view.TabLayoutParamSlice;
 import com.fission.slice.view.ViewPagerJavaSlice;
 import com.fission.slice.view.ViewPagerParamSlice;
-import com.fission.util.FLogUtil;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
@@ -65,7 +64,6 @@ public class ActivitySlice extends AbstractSlice {
         PackageSlice packageSlice = new PackageSlice(packageName,
                 "android.os.Bundle",
                 "android.view.View",
-                config.getPackageName() + ".R",
                 "com.musheng.android.common.mvp.BaseActivity",
                 "com.alibaba.android.arouter.facade.annotation.Route"
         );

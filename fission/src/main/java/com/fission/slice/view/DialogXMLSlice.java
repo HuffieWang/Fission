@@ -161,4 +161,10 @@ public class DialogXMLSlice extends AbstractSlice {
         Dialog annotation = element.getAnnotation(Dialog.class);
         return annotation.forceLayout();
     }
+
+    @Override
+    public String getOutputDir(String moduleName) {
+        return "/"+ moduleName +"/src/main/res/layout";
+    }
+
 }

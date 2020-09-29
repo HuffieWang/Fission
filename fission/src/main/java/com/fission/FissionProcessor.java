@@ -262,12 +262,27 @@ public class FissionProcessor extends AbstractProcessor {
 
     private String getOutputDir(ISlice slice, Element element){
 
+        String classpath;
+        if(element.getKind().isClass() || element.getKind().isInterface()){
+            classpath = FSystemUtil.getSubPackageName(element.toString());
+        } else {
+            classpath = FSystemUtil.getSubPackageName(element.getEnclosingElement().toString());
+        }
+
+        String moduleName;
+        if(classpath.startsWith("com")){
+            moduleName = "app";
+        } else {
+            moduleName = classpath.substring(0, classpath.indexOf("."));
+        }
+
         String outputDir = slice.getExtOutputDir();
         if (outputDir == null) {
-            if(slice.getOutputDir()== null){
-                return null;
-            }
-            outputDir = slice.getOutputDir();
+            outputDir = slice.getOutputDir(moduleName);
+        }
+
+        if(outputDir == null){
+            return null;
         }
 
         String mainDir = FSystemUtil.getProjectDir();
@@ -275,19 +290,9 @@ public class FissionProcessor extends AbstractProcessor {
             outputDir = mainDir + outputDir;
 
         } else {
-
             String pattern = outputDir;
-            mainDir = mainDir + "\\app\\src\\main\\java";
-            String classpath;
-            if(element.getKind().isClass() || element.getKind().isInterface()){
-                classpath = FSystemUtil.getSubPackageName(element.toString());
-            } else {
-                classpath = FSystemUtil.getSubPackageName(element.getEnclosingElement().toString());
-            }
-            classpath = mainDir + "\\" + classpath;
-
+            classpath = mainDir + "\\"+ moduleName +"\\src\\main\\java\\" + classpath;
             classpath = classpath.replaceAll("\\.", "\\\\");
-
             outputDir = FSystemUtil.patternPath(classpath, pattern);
         }
         outputDir = outputDir.replaceAll("/", "\\\\");
@@ -297,8 +302,8 @@ public class FissionProcessor extends AbstractProcessor {
 
     private String getPackageName(String outputDir){
         String packageName = "";
-        if(outputDir.contains("\\app\\src\\main\\java")){
-            packageName = outputDir.substring(outputDir.indexOf("\\app\\src\\main\\java") + "\\app\\src\\main\\java".length() + 1);
+        if(outputDir.contains("\\src\\main\\java")){
+            packageName = outputDir.substring(outputDir.indexOf("\\src\\main\\java") + "\\src\\main\\java".length() + 1);
             packageName = packageName.replaceAll("\\\\", ".");
             packageName = packageName.substring(0, packageName.length()-1);
         }

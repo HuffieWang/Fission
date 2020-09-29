@@ -41,6 +41,7 @@ public interface ISlice {
      * 默认文件输出路径
      * **/
     String getOutputDir();
+    String getOutputDir(String moduleName);
 
     /**
      * 设置自定义文件输出路径，优先级比默认路径高

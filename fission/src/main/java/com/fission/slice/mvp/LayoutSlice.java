@@ -83,4 +83,9 @@ public class LayoutSlice extends AbstractSlice {
     public String getOutputDir() {
         return "/app/src/main/res/layout";
     }
+
+    @Override
+    public String getOutputDir(String moduleName) {
+        return "/"+ moduleName +"/src/main/res/layout";
+    }
 }
